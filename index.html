@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>About Us - Ankii's Special Site</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #ffecf1 0%, #fef9fb 100%);
+    min-height: 100vh;
+    margin: 0;
+  }
+  .lovely-box {
+    background: #ffe4e6;
+    box-shadow: 0 8px 20px rgb(255 182 193 / 0.3);
+  }
+  .btn-fancy {
+    background: #ec4899;
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    box-shadow: 0 4px 14px rgb(236 72 153 / 0.45);
+    transition: all 0.25s ease;
+    user-select: none;
+  }
+  .btn-fancy:hover {
+    background: #db2777;
+    box-shadow: 0 6px 18px rgb(219 39 119 / 0.65);
+  }
+</style>
+</head>
+<body>
+
+<div id="responseBanner" class="hidden bg-green-100 text-green-800 px-4 py-2 text-center font-medium w-full mb-4 rounded-xl fixed top-0 left-0 z-50"></div>
+
+<main class="max-w-4xl mx-auto px-4 py-12">
+
+  <header class="text-center mb-12">
+    <h1 class="text-4xl font-extrabold text-pink-600 mb-2">About Us</h1>
+    <p class="text-pink-400">Welcome to your special space, Ankii!</p>
+  </header>
+
+  <!-- Envelope Section -->
+  <section id="envelopeSection" class="relative mx-auto max-w-md cursor-pointer select-none" title="Click to open envelope">
+    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Envelope" class="mx-auto w-48" id="envelopeImg" />
+    <p class="text-center text-pink-500 mt-2 italic">Click the envelope to see your message</p>
+  </section>
+
+  <!-- Sorry Modal (hidden by default) -->
+  <div id="sorryModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-3xl max-w-xs text-center shadow-lg animate-fadeIn">
+      <h3 class="text-xl font-bold text-pink-600 mb-4">Did you accept my sorry? 🙈</h3>
+      <div class="flex justify-center gap-6">
+        <button class="btn-fancy" onclick="handleSorryResponse(true)">Yes 😊</button>
+        <button class="btn-fancy bg-gray-400 hover:bg-gray-500" onclick="handleSorryResponse(false)">Nope 😒</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shimla Dream Project Section -->
+  <section class="max-w-xl mx-auto my-16 bg-pink-50 p-6 rounded-2xl shadow-xl text-center">
+    <h2 class="text-3xl font-bold text-pink-700 mb-3">🌨️ The Shimla Dream Project 🌨️</h2>
+    <p class="text-pink-600 text-base mb-4">Because what’s better than mountains, momos, and Ankii wrapped in 3 layers of sweaters?</p>
+    <button onclick="launchShimlaQuestion()" class="btn-fancy">Wanna Hear the Plan? 😄</button>
+  </section>
+
+  <!-- Likes and Dislikes -->
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl my-10">
+    <div class="lovely-box p-4 rounded-xl">
+      <h2 class="text-2xl font-bold text-pink-600 mb-2">What We Like ⭐</h2>
+      <textarea id="likesInput" rows="5" placeholder="e.g. sunsets, pani puri, beach trips..." class="w-full p-3 rounded-xl border border-pink-300 resize-none"></textarea>
+      <button onclick="saveLikes()" class="btn-fancy mt-3">Save Likes</button>
+      <ul id="likesList" class="mt-3 text-left text-pink-700 list-disc pl-4"></ul>
+    </div>
+
+    <div class="lovely-box p-4 rounded-xl">
+      <h2 class="text-2xl font-bold text-pink-600 mb-2">What We Dislike 🙈</h2>
+      <textarea id="dislikesInput" rows="5" placeholder="e.g. long queues, spicy food, cold mornings..." class="w-full p-3 rounded-xl border border-pink-300 resize-none"></textarea>
+      <button onclick="saveDislikes()" class="btn-fancy mt-3">Save Dislikes</button>
+      <ul id="dislikesList" class="mt-3 text-left text-pink-700 list-disc pl-4"></ul>
+    </div>
+  </section>
+
+  <!-- WhatsApp Video Call -->
+  <section class="flex flex-col items-center justify-center my-10">
+    <h2 class="text-2xl font-bold text-pink-600 mb-4">Wanna Talk? 📞</h2>
+    <a href="https://wa.me/919508812525" target="_blank" class="btn-fancy inline-block">
+      Start a WhatsApp Video Call 💬
+    </a>
+    <p class="text-sm text-gray-500 mt-2">*Link opens in WhatsApp — make sure Ankii is online 😉</p>
+  </section>
+
+  <!-- Chat Section Link -->
+  <section class="text-center my-8">
+    <a href="chat.html" class="btn-fancy">Open Cute Chat 💌</a>
+  </section>
+
+  <p class="text-sm text-gray-600 text-center mb-10">Let’s plan something magical this time 😇</p>
+
+  <!-- Comments Section -->
+  <section class="max-w-2xl mx-auto my-10 lovely-box p-6 rounded-xl">
+    <h2 class="text-2xl font-bold text-pink-600 mb-4 text-center">Your Thoughts 💬</h2>
+    <textarea id="commentInput" rows="4" placeholder="Write something fun or sassy here 😜..." class="w-full p-3 rounded-xl border border-pink-300 resize-none"></textarea>
+    <button onclick="saveComment()" class="btn-fancy mt-3">Post Review</button>
+    <div id="commentsDisplay" class="mt-4 space-y-2 text-left"></div>
+  </section>
+
+  <!-- Birthday Countdown -->
+  <section class="text-center mt-12 mb-20 text-pink-600 font-semibold text-lg" id="bdayCounter" aria-live="polite"></section>
+
+</main>
+
+<!-- Scripts -->
+<script>
+  // Private Login
+  (function() {
+    if(localStorage.getItem('auth') !== 'true') {
+      const username = prompt('Enter username:');
+      const password = prompt('Enter password:');
+      if(username !== 'funny' || password !== 'ankii') {
+        document.body.innerHTML = '<div style="font-family:sans-serif; text-align:center; margin-top:100px;"><h1>🚫 Access Denied</h1><p>Wrong credentials.</p></div>';
+        throw new Error('Unauthorized');
+      }
+      localStorage.setItem('auth', 'true');
+      alert(`Welcome, ${username}!`);
+    }
+  })();
+
+  // Envelope Click to open Sorry Modal
+  document.getElementById('envelopeSection').addEventListener('click', () => {
+    document.getElementById('sorryModal').classList.remove('hidden');
+  });
+
+  // Sorry modal response handlers
+  function handleSorryResponse(accepted) {
+    localStorage.setItem('sorryResponse', accepted ? 'accepted' : 'not accepted');
+    document.getElementById('sorryModal').classList.add('hidden');
+    updateResponseBanner();
+    if(accepted) {
+      setTimeout(() => {
+        launchShimlaQuestion();
+      }, 500);
+    }
+  }
+
+  // Show banner about sorry acceptance
+  function updateResponseBanner() {
+    const banner = document.getElementById('responseBanner');
+    const response = localStorage.getItem('sorryResponse');
+    if(response === 'accepted') {
+      banner.textContent = '🌟 Ankii accepted your sorry!';
+      banner.classList.remove('hidden');
+      banner.classList.replace('bg-yellow-100', 'bg-green-100');
+      banner.classList.replace('text-yellow-800', 'text-green-800');
+    } else if(response === 'not accepted') {
+      banner.textContent = '⏳ Still waiting for forgiveness...';
+      banner.classList.remove('hidden');
+      banner.classList.replace('bg-green-100', 'bg-yellow-100');
+      banner.classList.replace('text-green-800', 'text-yellow-800');
+    }
+  }
+  updateResponseBanner();
+
+  // Shimla Dream Project popup
+  function launchShimlaQuestion() {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50';
+    modal.innerHTML = `
+      <div class="bg-white p-6 rounded-3xl max-w-sm text-center shadow-lg animate-fadeIn">
+        <h3 class="text-xl font-bold text-pink-600 mb-4">Be honest... Would you ever go to Shimla with me? 😁</h3>
+        <p class="mb-4 text-gray-600">It's not just snow — it's snow + your fav hot chocolate + me talking non-stop! 🗻☕️🧥</p>
+        <div class="flex justify-center gap-6">
+          <button class="btn-fancy" onclick="handleShimlaResponse(true, this)">Someday maybe 😉</button>
+          <button class="btn-fancy bg-gray-400 hover:bg-gray-500" onclick="handleShimlaResponse(false, this)">Never in 1000 years 😤</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+  function handleShimlaResponse(yes, btn) {
+    const modal = btn.closest('div.fixed');
+    if(yes) {
+      modal.innerHTML = `
+        <div class="bg-white p-6 rounded-3xl max-w-sm text-center shadow-lg">
+          <h3 class="text-xl font-bold text-pink-600 mb-4">Yay! ❄️ Memories in the snow await!</h3>
+          <p class="mb-4 text-gray-600">Okay, now I’m googling hotel deals... 😂</p>
+          <img src="https://media.giphy.com/media/3o7btZQVU1ltlct3Qs/giphy.gif" alt="Snow Fun" class="mx-auto rounded-xl" />
+          <button class="btn-fancy mt-4" onclick="this.closest('.fixed').remove()">Close</button>
+        </div>
+      `;
+      triggerSnowfall();
+    } else {
+      modal.innerHTML = `
+        <div class="bg-white p-6 rounded-3xl max-w-sm text-center shadow-lg">
+          <h3 class="text-xl font-bold text-pink-600 mb-4">Noooo 😭</h3>
+          <p class="mb-4 text-gray-600">Even Shimla shed a little snowflake for that answer...</p>
+          <img src="https://media.giphy.com/media/xT9IgIc0lryrxvqVGM/giphy.gif" alt="Sad Snowman" class="mx-auto rounded-xl" />
+          <button class="btn-fancy bg-gray-400 hover:bg-gray-500 mt-4" onclick="this.closest('.fixed').remove()">Fineee 🥲</button>
+        </div>
+      `;
+    }
+  }
+
+  // Snowfall effect
+  function triggerSnowfall() {
+    const snowContainer = document.createElement('div');
+    snowContainer.style.position = 'fixed';
+    snowContainer.style.top = 0;
+    snowContainer.style.left = 0;
+    snowContainer.style.width = '100vw';
+    snowContainer.style.height = '100vh';
+    snowContainer.style.pointerEvents = 'none';
+    snowContainer.style.zIndex = 9999;
+    document.body.appendChild(snowContainer);
+    for(let i = 0; i < 30; i++) {
+      const flake = document.createElement('div');
+      flake.textContent = '❄️';
+      flake.style.position = 'absolute';
+      flake.style.left = Math.random() * 100 + 'vw';
+      flake.style.top = '-' + (Math.random() * 20) + 'vh';
+      flake.style.fontSize = (10 + Math.random() * 20) + 'px';
+      flake.style.opacity = Math.random();
+      flake.style.animation = `fall 7s linear infinite`;
+      flake.style.animationDelay = (i * 0.2) + 's';
+      snowContainer.appendChild(flake);
+    }
+    // Keyframes
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes fall {
+        0% {transform: translateY(0);}
+        100% {transform: translateY(110vh);}
+      }
+    `;
+    document.head.appendChild(style);
+    setTimeout(() => {
+      snowContainer.remove();
+      style.remove();
+    }, 7000);
+  }
+
+  // Likes & Dislikes saving and rendering
+  function saveLikes() {
+    const val = document.getElementById('likesInput').value.trim();
+    if(!val) return;
+    const arr = val.split(',').map(i => i.trim()).filter(Boolean);
+    localStorage.setItem('likes', JSON.stringify(arr));
+    renderList('likesList', arr);
+  }
+  function saveDislikes() {
+    const val = document.getElementById('dislikesInput').value.trim();
+    if(!val) return;
+    const arr = val.split(',').map(i => i.trim()).filter(Boolean);
+    localStorage.setItem('dislikes', JSON.stringify(arr));
+    renderList('dislikesList', arr);
+  }
+  function renderList(id, arr) {
+    const ul = document.getElementById(id);
+    ul.innerHTML = '';
+    arr.forEach((item, idx) => {
+      const li = document.createElement('li');
+      li.contentEditable = true;
+      li.spellcheck = false;
+      li.className = 'cursor-text';
+      li.textContent = item;
+      li.onblur = () => updateItem(id, idx, li.textContent);
+      ul.appendChild(li);
+    });
+  }
+  function updateItem(listId, idx, newVal) {
+    const key = listId === 'likesList' ? 'likes' : 'dislikes';
+    let arr = JSON.parse(localStorage.getItem(key) || '[]');
+    arr[idx] = newVal.trim();
+    localStorage.setItem(key, JSON.stringify(arr));
+    renderList(listId, arr);
+  }
+  // Load saved likes & dislikes on page load
+  window.addEventListener('load', () => {
+    const likes = JSON.parse(localStorage.getItem('likes') || '[]');
+    const dislikes = JSON.parse(localStorage.getItem('dislikes') || '[]');
+    document.getElementById('likesInput').value = likes.join(', ');
+    document.getElementById('dislikesInput').value = dislikes.join(', ');
+    renderList('likesList', likes);
+    renderList('dislikesList', dislikes);
+    updateBirthdayCountdown();
+  });
+
+  // Comments section
+  function saveComment() {
+    const val = document.getElementById('commentInput').value.trim();
+    if(!val) return alert('Write something first!');
+    let comments = JSON.parse(localStorage.getItem('comments') || '[]');
+    comments.push({text: val, time: new Date().toLocaleString()});
+    localStorage.setItem('comments', JSON.stringify(comments));
+    document.getElementById('commentInput').value = '';
+    renderComments();
+  }
+  function renderComments() {
+    const div = document.getElementById('commentsDisplay');
+    let comments = JSON.parse(localStorage.getItem('comments') || '[]');
+    div.innerHTML = comments.map(c => `
+      <div class="p-3 bg-pink-50 rounded-xl shadow-sm">
+        <p class="text-pink-800">${c.text}</p>
+        <p class="text-xs text-gray-400 text-right mt-1">${c.time}</p>
+      </div>`).join('');
+  }
+  window.addEventListener('load', renderComments);
+
+  // Birthday Countdown
+  function updateBirthdayCountdown() {
+    const el = document.getElementById('bdayCounter');
+    const now = new Date();
+    let bday = new Date(now.getFullYear(), 1, 4); // Feb 4 (month is 0-based)
+    if(now > bday) bday.setFullYear(now.getFullYear() + 1);
+    const diff = Math.ceil((bday - now) / (1000 * 60 * 60 * 24));
+    if(el) el.textContent = `🎂 ${diff} days until Ankii's Birthday!`;
+  }
+</script>
+
+</body>
+</html>

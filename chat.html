@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cute Chat with Ankii 💌</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #ffe4e6 0%, #fef9fb 100%);
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-container {
+    max-width: 600px;
+    margin: 2rem auto 1rem auto;
+    background: #fff0f6;
+    border-radius: 1rem;
+    box-shadow: 0 12px 25px rgb(236 72 153 / 0.3);
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+  }
+  .chat-box {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    border-bottom: 2px solid #ec4899;
+  }
+  .chat-message {
+    background: #fce7f3;
+    padding: 0.6rem 1rem;
+    margin: 0.4rem 0;
+    border-radius: 1rem;
+    max-width: 70%;
+    box-shadow: 0 2px 6px rgb(236 72 153 / 0.2);
+  }
+  .chat-message.me {
+    background: #ec4899;
+    color: white;
+    margin-left: auto;
+    box-shadow: 0 2px 8px rgb(219 39 119 / 0.5);
+  }
+  .chat-time {
+    font-size: 0.65rem;
+    color: #a11d63;
+    margin-top: 0.1rem;
+  }
+  .chat-input-area {
+    padding: 1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .chat-input {
+    flex-grow: 1;
+    padding: 0.75rem 1rem;
+    border-radius: 9999px;
+    border: 2px solid #ec4899;
+    font-size: 1rem;
+    outline: none;
+  }
+  .btn-send {
+    background: #ec4899;
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgb(236 72 153 / 0.6);
+    transition: background-color 0.25s ease;
+    user-select: none;
+  }
+  .btn-send:hover {
+    background: #db2777;
+  }
+  .typing-indicator {
+    font-style: italic;
+    color: #db2777;
+    padding-left: 1rem;
+    height: 24px;
+  }
+  /* Emoji picker styles (simple inline) */
+  .emoji-picker {
+    position: relative;
+  }
+  .emoji-button {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  .emoji-list {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    background: white;
+    border: 1px solid #ec4899;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 200px;
+    box-shadow: 0 6px 18px rgb(236 72 153 / 0.4);
+    user-select: none;
+  }
+  .emoji-list span {
+    cursor: pointer;
+    font-size: 1.5rem;
+  }
+  .emoji-list span:hover {
+    transform: scale(1.3);
+  }
+</style>
+</head>
+<body>
+
+<header class="text-center mt-6 mb-4">
+  <h1 class="text-4xl font-extrabold text-pink-600">Cute Chat 💌</h1>
+  <p class="text-pink-400">Chat with Ankii in your secret space!</p>
+</header>
+
+<div class="chat-container" role="main" aria-live="polite" aria-label="Chat conversation">
+  <div id="chatBox" class="chat-box" tabindex="0" aria-live="polite" aria-relevant="additions"></div>
+
+  <div class="typing-indicator" id="typingIndicator" aria-live="polite" aria-atomic="true" style="visibility:hidden;">
+    Ankii is typing...
+  </div>
+
+  <form id="chatForm" class="chat-input-area" onsubmit="return sendChat();">
+    <div class="emoji-picker">
+      <button type="button" id="emojiBtn" class="emoji-button" aria-label="Open emoji picker">😊</button>
+      <div id="emojiList" class="emoji-list hidden" role="list">
+        <span role="listitem" tabindex="0" aria-label="Smiling face" data-emoji="😊">😊</span>
+        <span role="listitem" tabindex="0" aria-label="Laughing face" data-emoji="😂">😂</span>
+        <span role="listitem" tabindex="0" aria-label="Heart" data-emoji="💖">💖</span>
+        <span role="listitem" tabindex="0" aria-label="Thumbs up" data-emoji="👍">👍</span>
+        <span role="listitem" tabindex="0" aria-label="Winking face" data-emoji="😉">😉</span>
+        <span role="listitem" tabindex="0" aria-label="Snowflake" data-emoji="❄️">❄️</span>
+        <span role="listitem" tabindex="0" aria-label="Hugging face" data-emoji="🤗">🤗</span>
+        <span role="listitem" tabindex="0" aria-label="Party popper" data-emoji="🎉">🎉</span>
+      </div>
+    </div>
+    <input id="chatInput" class="chat-input" autocomplete="off" placeholder="Type your message..." aria-label="Message input" />
+    <button type="submit" class="btn-send" aria-label="Send message">Send</button>
+  </form>
+</div>
+
+<script>
+  // Login check, same as index.html for consistency
+  (function() {
+    if(localStorage.getItem('auth') !== 'true') {
+      alert('Please login from the main page first.');
+      window.location.href = 'index.html';
+    }
+  })();
+
+  const chatBox = document.getElementById('chatBox');
+  const chatInput = document.getElementById('chatInput');
+  const typingIndicator = document.getElementById('typingIndicator');
+  const emojiBtn = document.getElementById('emojiBtn');
+  const emojiList = document.getElementById('emojiList');
+
+  // Load chats from localStorage and render
+  function renderChat() {
+    const chats = JSON.parse(localStorage.getItem('chat') || '[]');
+    chatBox.innerHTML = chats.map(chat => `
+      <div class="chat-message ${chat.me ? 'me' : ''}">
+        <div>${chat.msg}</div>
+        <div class="chat-time">${chat.time}</div>
+      </div>
+    `).join('');
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  // Save and send chat message
+  function sendChat() {
+    const msg = chatInput.value.trim();
+    if (!msg) return false;
+    let chats = JSON.parse(localStorage.getItem('chat') || '[]');
+    const now = new Date();
+    chats.push({ msg, time: now.toLocaleTimeString(), me: true });
+    localStorage.setItem('chat', JSON.stringify(chats));
+    chatInput.value = '';
+    renderChat();
+    showTypingIndicator();
+    // Simulate Ankii typing and reply after delay
+    setTimeout(() => {
+      addAnkiiReply();
+    }, 2000);
+    return false; // prevent form submit reload
+  }
+
+  // Show typing indicator
+  function showTypingIndicator() {
+    typingIndicator.style.visibility = 'visible';
+  }
+  // Hide typing indicator
+  function hideTypingIndicator() {
+    typingIndicator.style.visibility = 'hidden';
+  }
+
+  // Ankii's automated reply (fun & cute)
+  function addAnkiiReply() {
+    let chats = JSON.parse(localStorage.getItem('chat') || '[]');
+    const replies = [
+      "Aww, that's sweet! 💖",
+      "You made my day! 😊",
+      "Haha, you're funny! 😂",
+      "Can't wait to see you! 🤗",
+      "You're the best! 👍",
+      "Let's plan that Shimla trip soon! ❄️",
+      "Love your energy! 🎉",
+      "Keep smiling! 😉"
+    ];
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    chats.push({ msg: reply, time: new Date().toLocaleTimeString(), me: false });
+    localStorage.setItem('chat', JSON.stringify(chats));
+    renderChat();
+    hideTypingIndicator();
+  }
+
+  // Emoji picker toggle
+  emojiBtn.addEventListener('click', () => {
+    emojiList.classList.toggle('hidden');
+  });
+
+  // Insert emoji on click or keyboard enter
+  emojiList.querySelectorAll('span').forEach(span => {
+    span.addEventListener('click', () => {
+      insertAtCursor(chatInput, span.dataset.emoji);
+      emojiList.classList.add('hidden');
+      chatInput.focus();
+    });
+    span.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        insertAtCursor(chatInput, span.dataset.emoji);
+        emojiList.classList.add('hidden');
+        chatInput.focus();
+      }
+    });
+  });
+
+  // Helper: insert emoji at cursor in textarea/input
+  function insertAtCursor(input, textToInsert) {
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const text = input.value;
+    input.value = text.substring(0, start) + textToInsert + text.substring(end);
+    input.selectionStart = input.selectionEnd = start + textToInsert.length;
+  }
+
+  // Load chat on page load
+  window.addEventListener('load', renderChat);
+
+  // Logout button to clear auth and go back
+  const logoutBtn = document.createElement('button');
+  logoutBtn.textContent = 'Logout';
+  logoutBtn.className = 'fixed top-4 right-4 px-4 py-2 bg-pink-600 text-white rounded-xl hover:bg-pink-700 z-50';
+  logoutBtn.onclick = () => {
+    localStorage.removeItem('auth');
+    localStorage.removeItem('chat');
+    window.location.href = 'index.html';
+  };
+  document.body.appendChild(logoutBtn);
+</script>
+
+</body>
+</html>
